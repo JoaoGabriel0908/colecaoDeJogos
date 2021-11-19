@@ -3,6 +3,7 @@ package br.senai.sp.jandira;
 import br.senai.sp.jandira.model.Fabricante;
 import br.senai.sp.jandira.model.Jogo;
 import br.senai.sp.jandira.repository.JogoRepository;
+import br.senai.sp.jandira.ui.FrameColecaoJogos;
 
 public class App {
 
@@ -10,9 +11,9 @@ public class App {
 		
 		JogoRepository colecao = new JogoRepository(1);
 		
-		Jogo a = new Jogo();
+		/*Jogo a = new Jogo();
 		a.setTitulo("Crash");
-		
+		a.getFabricante().setNome("Sony");
 		a.setZerado(true);
 		a.setValor(100);
 		colecao.salvar(a, 0);
@@ -23,7 +24,9 @@ public class App {
 			System.out.println(jogosAtuais.getValor());
 			System.out.println(jogosAtuais.isZerado());
 			
-		}
+		}*/
+		FrameColecaoJogos frame = new FrameColecaoJogos();
+		frame.setVisible(true);
 	}
 	
 }

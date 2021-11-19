@@ -45,8 +45,8 @@ public class Jogo {
 		return valor;
 	}
 	
-	public void setValor(double valor) {
-		this.valor = valor;
+	public void setValor(String valor) {
+		this.valor = Double.parseDouble(valor);
 	}
 	
 	public String getObservacoes() {

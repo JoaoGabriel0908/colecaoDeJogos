@@ -6,7 +6,14 @@ public class Fabricante {
 	private String fundacao;
 	private String sede;
 
+	public Fabricante(String nome,  String fundacao,String sede) {
+		this.nome = nome;
+		this.fundacao = fundacao;
+		this.sede = sede;
+	}
+	
 	//GETTERS E SETTERS DA CLASSE (PEGAR E DEFINIR)
+	
 	public String getNome() {
 		return nome;
 	}
