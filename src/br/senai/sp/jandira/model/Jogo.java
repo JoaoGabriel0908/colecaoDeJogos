@@ -25,7 +25,7 @@ public class Jogo {
 		this.fabricante = fabricante;
 	}
 	
-	public boolean isZerado() {
+	public boolean getZerado() {
 		return zerado;
 	}
 	
@@ -43,6 +43,10 @@ public class Jogo {
 	
 	public double getValor() {
 		return valor;
+	}
+	
+	public String getValor(double valor) {
+		return Double.toString(valor);
 	}
 	
 	public void setValor(String valor) {

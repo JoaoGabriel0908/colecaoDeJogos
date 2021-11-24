@@ -8,11 +8,14 @@ import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import br.senai.sp.jandira.model.Console;
 import br.senai.sp.jandira.model.Fabricante;
 import br.senai.sp.jandira.model.Jogo;
 import br.senai.sp.jandira.repository.FabricanteRepository;
+import br.senai.sp.jandira.repository.JogoRepository;
 
 import javax.swing.JLabel;
 import javax.swing.JCheckBox;
@@ -26,11 +29,16 @@ import javax.swing.JList;
 import javax.swing.JTextField;
 
 public class FrameColecaoJogos extends JFrame {
-
+	
+	private FabricanteRepository criador = new FabricanteRepository();
+	private JogoRepository colecao = new JogoRepository();
+	
 	private JPanel contentPane;
 	private JTextField textObservacao;
 	private JTextField textValor;
 	private JTextField textJogo;
+	
+	private int posicao;
 
 	public FrameColecaoJogos() {
 		setTitle("Biblioteca de Jogos");
@@ -75,9 +83,7 @@ public class FrameColecaoJogos extends JFrame {
 		
 		JList listJogos = new JList();
 		scrollPane.setViewportView(listJogos);
-		
 		DefaultListModel<String> modelJogos = new DefaultListModel<String>();
-		
 		listJogos.setModel(modelJogos);
 		
 		JButton btnVoltar = new JButton("<");
@@ -89,7 +95,7 @@ public class FrameColecaoJogos extends JFrame {
 		contentPane.add(btnAvancar);
 		
 		textObservacao = new JTextField();
-		textObservacao.setBounds(250, 277, 168, 61);
+		textObservacao.setBounds(250, 278, 168, 60);
 		contentPane.add(textObservacao);
 		textObservacao.setColumns(10);
 		
@@ -101,6 +107,7 @@ public class FrameColecaoJogos extends JFrame {
 		JLabel lblConsole = new JLabel("Console:");
 		lblConsole.setBounds(22, 198, 58, 14);
 		contentPane.add(lblConsole);
+		
 		
 		JComboBox comboConsole = new JComboBox();
 		
@@ -118,13 +125,17 @@ public class FrameColecaoJogos extends JFrame {
 		contentPane.add(textJogo);
 		textJogo.setColumns(10);
 		
-		JComboBox comboFabricantes = new JComboBox();
-		
+		//FABRICANTE
+		JComboBox comboFabricante = new JComboBox();
 		DefaultComboBoxModel<String> comboModelFabricantes = new DefaultComboBoxModel<String>();
+
+		for(Fabricante fabricante : criador.getFabricantes()) {
+			comboModelFabricantes.addElement(fabricante.getNome());
+		}
 		
-		
-		comboFabricantes.setBounds(22, 121, 187, 22);
-		contentPane.add(comboFabricantes);
+		comboFabricante.setBounds(22, 121, 187, 22);
+		comboFabricante.setModel(comboModelFabricantes);
+		contentPane.add(comboFabricante);
 		
 		btnSalvar.addActionListener(new ActionListener() {
 			
@@ -136,11 +147,34 @@ public class FrameColecaoJogos extends JFrame {
 				jogo.setTitulo(textJogo.getText());
 				jogo.setObservacoes(textObservacao.getText());
 				jogo.setValor(textValor.getText());
-				jogo.setZerado(rootPaneCheckingEnabled);
+				jogo.setZerado(chcZerado.isSelected());
 				jogo.setConsole(definirConsole(comboConsole.getSelectedIndex()));
-				jogo.setFabricante(getFabricanteIndex(comboFabricantes.getSelectedIndex()));
+				jogo.setFabricante(criador.getFabricantes()[comboFabricante.getSelectedIndex()]);
+				
+				colecao.salvar(jogo,posicao);
+				posicao++;
+				modelJogos.addElement(jogo.getTitulo());
+			}
+
+		});
+		listJogos.addListSelectionListener(new ListSelectionListener() {
+			
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				
+				Jogo jogosAdicionados = colecao.listarJogo(listJogos.getSelectedIndex());
+				textJogo.setText(jogosAdicionados.getTitulo());
+				
+				double valor = Double.parseDouble(textValor.getText());
+				
+				textObservacao.setText(jogosAdicionados.getObservacoes());
+				comboConsole.setSelectedIndex(jogosAdicionados.getConsole().ordinal());
+				comboFabricante.setSelectedIndex(criador.getIndex(jogosAdicionados.getFabricante()));
+				chcZerado.setSelected(jogosAdicionados.getZerado());
+				textValor.setText(jogosAdicionados.getValor(valor));
 			}
 		});
+		
 		
 	}
 	private Console definirConsole(int consoleSelecionado) {
